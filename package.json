@@ -3,7 +3,6 @@
     "build": "tsc",
     "dev": "nodemon dist/server.js",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\"",
-    "gen": "prisma migrate dev --name init",
     "prettier:check": "prettier --config .prettierrc --check \"**/*.{js,jsx,ts,tsx,json,md}\"",
     "start": "node dist/server.js",
     "start:ts": "ts-node src/server.ts",
@@ -11,7 +10,7 @@
     "watch": "tsc -w",
     "prepare": "husky install"
   },
-  "name": "uvu-astify-graphql",
+  "name": "uvu-fastify-graphql",
   "version": "0.0.1",
   "description": "uvu demo using fastify with GraphQL",
   "main": "src/server.js",

@@ -4,21 +4,16 @@ import { test } from 'uvu';
 import * as assert from 'uvu/assert';
 import { name } from '../../fixtures/utilities/hello';
 import build from '../../src/app';
-import { goodbyeResponse } from '../../src/utilities/hello';
 
 let app: FastifyInstance;
 
 test.before(async () => {
   app = await build();
+  await app.ready();
 });
 
 test.before.each((meta) => {
   console.log(meta['__test__']);
-});
-
-test('goodbyeResponse', () => {
-  assert.type(goodbyeResponse, 'function');
-  assert.is(goodbyeResponse(name), 'So long Matthew!');
 });
 
 test('it sends expected response to hello query', async () => {
@@ -27,8 +22,6 @@ test('it sends expected response to hello query', async () => {
       hello
     }
   `;
-
-  await app.ready();
 
   const response = await supertest(app.server)
     .post('/graphql')
@@ -48,8 +41,6 @@ test('it sends expected response to goodbye query', async () => {
     }
   `;
   const variables = { goodbyeName: name };
-
-  await app.ready();
 
   const response = await supertest(app.server)
     .post('/graphql')
