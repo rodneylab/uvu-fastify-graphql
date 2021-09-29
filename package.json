@@ -1,0 +1,45 @@
+{
+  "scripts": {
+    "build": "tsc",
+    "dev": "nodemon dist/server.js",
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\"",
+    "gen": "prisma migrate dev --name init",
+    "prettier:check": "prettier --config .prettierrc --check \"**/*.{js,jsx,ts,tsx,json,md}\"",
+    "start": "node dist/server.js",
+    "start:ts": "ts-node src/server.ts",
+    "test": "uvu -r ts-node/register tests",
+    "watch": "tsc -w",
+    "prepare": "husky install"
+  },
+  "name": "uvu-astify-graphql",
+  "version": "0.0.1",
+  "description": "uvu demo using fastify with GraphQL",
+  "main": "src/server.js",
+  "author": "Rodney Lab <ask@rodneylab.com> (@rodneyLab)",
+  "license": "BSD-3-Clause",
+  "dependencies": {
+    "apollo-server-core": "^3.3.0",
+    "apollo-server-fastify": "^3.3.0",
+    "apollo-server-plugin-base": "^3.2.0",
+    "fastify": "^3.21.6",
+    "graphql": "^15.6.0",
+    "reflect-metadata": "^0.1.13",
+    "type-graphql": "^1.1.1"
+  },
+  "devDependencies": {
+    "@types/node": "^16.10.1",
+    "@types/supertest": "^2.0.11",
+    "@typescript-eslint/eslint-plugin": "^4.32.0",
+    "eslint": "^7.32.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "husky": "^7.0.2",
+    "nodemon": "^2.0.13",
+    "prettier": "^2.4.1",
+    "supertest": "^6.1.6",
+    "ts-node": "^10.2.1",
+    "typescript": "^4.4.3",
+    "uvu": "^0.5.1"
+  }
+}
