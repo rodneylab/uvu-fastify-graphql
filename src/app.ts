@@ -41,6 +41,4 @@ export async function build(opts = {}): Promise<FastifyInstance> {
   return app;
 }
 
-// startApolloServer();
-
 export { build as default };
