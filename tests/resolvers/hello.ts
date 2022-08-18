@@ -17,7 +17,6 @@ test.before.each((meta) => {
 test.after(() => app.close());
 
 test('it sends expected response to hello query', async () => {
-  try {
     const query = `
     query Query {
       hello
@@ -34,15 +33,9 @@ test('it sends expected response to hello query', async () => {
     const json = await response.json();
     assert.snapshot(JSON.stringify(json), '{"data":{"hello":"Hello everybody!"}}');
     assert.is(json.data.hello, 'Hello everybody!');
-  } catch (error) {
-    console.error(
-      `Error in test resolvers/hello.ts: it sends expected response to hello query: ${error}`,
-    );
-  }
 });
 
 test('it sends expected response to goodbye query', async () => {
-  try {
     const query = `
     query Query($goodbyeName: String!) {
       goodbye(name: $goodbyeName)
@@ -61,11 +54,6 @@ test('it sends expected response to goodbye query', async () => {
     const json = await response.json();
     assert.snapshot(JSON.stringify(json), '{"data":{"goodbye":"So long Matthew!"}}');
     assert.is(json.data.goodbye, 'So long Matthew!');
-  } catch (error) {
-    console.error(
-      `Error in test resolvers/hello.ts: it sends expected response to goodbye query: ${error}`,
-    );
-  }
 });
 
 test.run();
