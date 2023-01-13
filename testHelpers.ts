@@ -1,4 +1,4 @@
-import { FastifyInstance, LightMyRequestResponse } from 'fastify';
+import type { FastifyInstance, LightMyRequestResponse } from 'fastify';
 import { test } from 'uvu';
 import build from './src/app';
 
