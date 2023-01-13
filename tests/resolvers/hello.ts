@@ -1,20 +1,9 @@
-import type { FastifyInstance } from 'fastify';
 import { test } from 'uvu';
-import * as assert from 'uvu/assert';
+import { is, ok, snapshot } from 'uvu/assert';
 import { name } from '../../fixtures/utilities/hello';
-import build from '../../src/app';
+import { createTestContext } from '../../testHelpers';
 
-let app: FastifyInstance;
-
-test.before(async () => {
-	app = await build();
-});
-
-test.before.each((meta) => {
-	console.log(meta['__test__']);
-});
-
-test.after(() => app.close());
+const ctx = createTestContext();
 
 test('it sends expected response to hello query', async () => {
 	const query = `
@@ -23,16 +12,14 @@ test('it sends expected response to hello query', async () => {
     }
   `;
 
-	const response = await app.inject({
-		method: 'POST',
-		url: '/graphql',
-		headers: { 'content-type': 'application/json' },
-		payload: { query, variables: {} },
-	});
+	const response = await ctx.request(query);
+	ok(response);
 
-	const json = await response.json();
-	assert.snapshot(JSON.stringify(json), '{"data":{"hello":"Hello everybody!"}}');
-	assert.is(json.data.hello, 'Hello everybody!');
+	const { data }: { data: { hello: string } } = await response.json();
+	snapshot(JSON.stringify(data), '{"hello":"Hello everybody!"}');
+
+	const { hello } = data;
+	is(hello, 'Hello everybody!');
 });
 
 test('it sends expected response to goodbye query', async () => {
@@ -43,17 +30,14 @@ test('it sends expected response to goodbye query', async () => {
   `;
 	const variables = { goodbyeName: name };
 
-	await app.ready();
+	const response = await ctx.request(query, variables);
+	ok(response);
 
-	const response = await app.inject({
-		method: 'POST',
-		url: '/graphql',
-		headers: { 'content-type': 'application/json' },
-		payload: { query, variables },
-	});
-	const json = await response.json();
-	assert.snapshot(JSON.stringify(json), '{"data":{"goodbye":"So long Matthew!"}}');
-	assert.is(json.data.goodbye, 'So long Matthew!');
+	const { data }: { data: { goodbye: string } } = await response.json();
+	snapshot(JSON.stringify(data), '{"goodbye":"So long Matthew!"}');
+
+	const { goodbye } = data;
+	is(goodbye, 'So long Matthew!');
 });
 
 test.run();

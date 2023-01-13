@@ -1,44 +1,28 @@
-import { ApolloServerPluginDrainHttpServer } from 'apollo-server-core';
-import { ApolloServer } from 'apollo-server-fastify';
-import { ApolloServerPlugin } from 'apollo-server-plugin-base';
-import Fastify, { FastifyInstance } from 'fastify';
-import 'reflect-metadata';
-import { buildSchema } from 'type-graphql';
-import HelloResolver from './resolvers/hello';
+import type { FastifyInstance, FastifyServerOptions } from 'fastify';
+import Fastify from 'fastify';
+import mercurius from 'mercurius';
+import { schema } from './schema';
 
-function fastifyAppClosePlugin(app: FastifyInstance): ApolloServerPlugin {
-	return {
-		async serverWillStart() {
-			return {
-				async drainServer() {
-					await app.close();
-				},
-			};
-		},
-	};
+let app: FastifyInstance | null = null;
+
+async function build(options: FastifyServerOptions = { logger: true }) {
+	try {
+		app = Fastify(options);
+		app.get('/', async function (_req, reply) {
+			return reply.graphql('{}');
+		});
+
+		await app.register(mercurius, {
+			schema,
+			subscription: true,
+			graphiql: true,
+		});
+
+		return app;
+	} catch (err) {
+		if (app) app.log.error(err);
+		process.exit(1);
+	}
 }
 
-export async function build(opts = {}): Promise<FastifyInstance> {
-	const app: FastifyInstance = Fastify(opts);
-
-	const apolloServer = new ApolloServer({
-		schema: await buildSchema({
-			resolvers: [HelloResolver],
-			validate: false,
-		}),
-		plugins: [
-			fastifyAppClosePlugin(app),
-			ApolloServerPluginDrainHttpServer({ httpServer: app.server }),
-		],
-		context: ({ request, reply }) => ({
-			request,
-			reply,
-		}),
-	});
-	await apolloServer.start();
-	app.register(apolloServer.createHandler());
-
-	return app;
-}
-
-export { build as default };
+export default build;

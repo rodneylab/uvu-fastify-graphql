@@ -1,10 +1,16 @@
-import app from './app';
+import { FastifyInstance } from 'fastify';
+import build from './app';
 
-(async () => {
-	const server = await app();
+let app: FastifyInstance | null = null;
 
-	server.listen(4000, () => {
-		console.log(`Server ready at
-http://localhost:4000/graphql`);
-	});
-})();
+const start = async () => {
+	try {
+		app = await build();
+		await app.listen({ port: 4000 });
+	} catch (err) {
+		app?.log.error(err);
+		process.exit(1);
+	}
+};
+
+void start();
