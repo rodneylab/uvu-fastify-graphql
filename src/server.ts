@@ -1,5 +1,5 @@
 import { FastifyInstance } from 'fastify';
-import build from '~app';
+import build from './app';
 
 let app: FastifyInstance | null = null;
 
